@@ -51,6 +51,7 @@ export class DynmapStats extends plugin {
             logger.warn("[Dynmap-Stats] Error parsing config. Using default config instead.")
             this.#config = YAML.parse(fs.readFileSync(this.#default_config_path, 'utf8'))
         }
+        logger.info("[configs]", this.#config)
 
         this.saveConfig()
     }
@@ -145,7 +146,7 @@ export class DynmapStats extends plugin {
     }
 
     async setURL() {
-        const param = this.getParam(this.e.msg)
+        const param = this.getParam(this.e.msg, "#Dynmap设置网址")
         if (param) {
             this.#config.url = param
             this.saveConfig()
