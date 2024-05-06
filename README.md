@@ -8,7 +8,7 @@ git clone --depth=1 https://github.com/Nats-ji/yunzai-dynmap-stats ./plugins/dyn
 ```
 
 ## 设置
-把 `configs/default_configs/config.yaml` 复制到 `configs/config.yam`
+把 `configs/default_configs/config.yaml` 复制到 `configs/config.yaml`
 
 可配置项目：
 ```yaml
