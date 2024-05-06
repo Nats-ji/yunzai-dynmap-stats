@@ -18,11 +18,6 @@ export class DynmapStats extends plugin {
                 {
                     reg: '^#MC状态$',
                     fnc: 'queryStats'
-                },
-                {
-                    reg: '^#Dynmap设置网址',
-                    fnc: 'setURL',
-                    permission: 'master'
                 }
             ]
         })
@@ -36,28 +31,25 @@ export class DynmapStats extends plugin {
         this.loadConfig()
     }
 
-    loadConfig() {
-        let config_path = this.#config_path
-        if (!fs.existsSync(this.#config_path)) {
-            logger.warn("[Dynmap-Stats] Config doesn't exist. Using default config instead.")
-            config_path = this.#default_config_path
-        }
-
-        const file = fs.readFileSync(config_path, 'utf8')
-
-        try {
-            this.#config = YAML.parse(fs.readFileSync(config_path, 'utf8'))
-        } catch (error) {
-            logger.warn("[Dynmap-Stats] Error parsing config. Using default config instead.")
-            this.#config = YAML.parse(fs.readFileSync(this.#default_config_path, 'utf8'))
-        }
-        logger.info("[configs]", this.#config)
-
-        this.saveConfig()
+    createConfig() {
+        fs.cpSync(this.#default_config_path, this.#config_path)
     }
 
-    saveConfig() {
-        fs.writeFileSync(this.#config_path, YAML.stringify(this.#config))
+    loadConfig() {
+        if (!fs.existsSync(this.#config_path)) {
+            logger.warn("[Dynmap-Stats] Config doesn't exist. Using default config instead.")
+            this.createConfig()
+        }
+
+        const file = fs.readFileSync(this.#config_path, 'utf8')
+
+        try {
+            this.#config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
+        } catch (error) {
+            logger.warn("[Dynmap-Stats] Error parsing config. Using default config instead.")
+            this.createConfig()
+            this.#config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
+        }
     }
 
     async connectionError() {
@@ -134,25 +126,10 @@ export class DynmapStats extends plugin {
         })
     }
 
-    getParam(msg, cmd) {
-        return msg.replace(cmd, '').trim()
-    }
-
     async queryStats() {
         if (this.#config.url)
             await this.fetchServerData(this.#config.url)
         else
-            await this.reply("请先使用“#Dynmap设置网址”命令来配置Dynmap网址。")
-    }
-
-    async setURL() {
-        const param = this.getParam(this.e.msg, "#Dynmap设置网址")
-        if (param) {
-            this.#config.url = param
-            this.saveConfig()
-            await this.reply(`Dynmap网址已设置为${param}`)
-        }
-        else
-            await this.reply("请将网址和命令一同发送，例如：#Dynmap设置网址 https://example.com")
+            await this.reply("请先配置文件里设置Dynmap网址。")
     }
 }
