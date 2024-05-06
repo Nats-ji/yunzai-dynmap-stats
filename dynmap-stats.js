@@ -1,8 +1,12 @@
 // @ts-check
 import plugin from '../../lib/plugins/plugin.js'
 import fs from 'fs'
+import path from 'path'
+import { URL } from 'url';
 import https from 'https'
 import YAML from 'yaml'
+
+const __dirname = new URL('.', import.meta.url).pathname;
 
 export class DynmapStats extends plugin {
     constructor() {
@@ -24,8 +28,8 @@ export class DynmapStats extends plugin {
         })
     }
 
-    #default_config_path = `configs/default_configs/config.ymal`
-    #config_path = "configs/config.ymal"
+    #default_config_path = path.resolve(__dirname, "configs/default_configs/config.yaml")
+    #config_path = path.resolve(__dirname, "configs/config.yaml")
     #config = {}
 
     init() {
