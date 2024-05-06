@@ -21,7 +21,7 @@ export class DynmapStats extends plugin {
                 },
                 {
                     reg: '^#Dynmap设置网址',
-                    fuc: 'setURL',
+                    fnc: 'setURL',
                     permission: 'master'
                 }
             ]
@@ -39,7 +39,7 @@ export class DynmapStats extends plugin {
     loadConfig() {
         let config_path = this.#config_path
         if (!fs.existsSync(this.#config_path)) {
-            logger.warn("Config doesn't exist. Using default config instead.")
+            logger.warn("[Dynmap-Stats] Config doesn't exist. Using default config instead.")
             config_path = this.#default_config_path
         }
 
@@ -48,7 +48,7 @@ export class DynmapStats extends plugin {
         try {
             this.#config = YAML.parse(fs.readFileSync(config_path, 'utf8'))
         } catch (error) {
-            logger.warn("Error parsing config. Using default config instead.")
+            logger.warn("[Dynmap-Stats] Error parsing config. Using default config instead.")
             this.#config = YAML.parse(fs.readFileSync(this.#default_config_path, 'utf8'))
         }
 
