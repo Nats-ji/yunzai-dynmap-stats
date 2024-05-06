@@ -1,0 +1,11 @@
+# Dynmap的网址
+url:
+
+# 显示游戏时间
+showServerTime: true
+
+# 显示游戏天气
+showWeather: true
+
+# 显示玩家生命
+showPlayerStats: true
