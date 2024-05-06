@@ -7,6 +7,7 @@ import https from 'https'
 import YAML from 'yaml'
 
 const __dirname = new URL('.', import.meta.url).pathname;
+let config = {}
 
 export class DynmapStats extends plugin {
     constructor() {
@@ -25,7 +26,6 @@ export class DynmapStats extends plugin {
 
     #default_config_path = path.resolve(__dirname, "configs/default_configs/config.yaml")
     #config_path = path.resolve(__dirname, "configs/config.yaml")
-    #config = {}
 
     init() {
         this.loadConfig()
@@ -41,15 +41,15 @@ export class DynmapStats extends plugin {
             this.createConfig()
         }
 
-        const file = fs.readFileSync(this.#config_path, 'utf8')
-
         try {
-            this.#config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
+            config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
         } catch (error) {
             logger.warn("[Dynmap-Stats] Error parsing config. Using default config instead.")
             this.createConfig()
-            this.#config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
+            config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
         }
+
+        logger.info("config", config)
     }
 
     async connectionError() {
@@ -68,7 +68,7 @@ export class DynmapStats extends plugin {
             for (let i = 0; i < data.players.length; i++) {
                 const player = data.players[i];
                 msg += `${player.name}`
-                if (this.#config.showPlayerStats)
+                if (config.showPlayerStats)
                     msg += `（${Math.round(player.health)}❤️，${Math.round(player.armor)}🦺）`
 
                 if (i == data.players.length - 1)
@@ -78,10 +78,10 @@ export class DynmapStats extends plugin {
             }
         }
 
-        if (this.#config.showServerTime)
+        if (config.showServerTime)
             msg += `\n服务器时间：${new Intl.DateTimeFormat('zh-CN', { timeStyle: 'short', timeZone: `UTC` }).format(new Date(data.servertime / 1000 * 3600000 + 21600000))}。`
 
-        if (this.#config.showWeather) {
+        if (config.showWeather) {
             msg += `\n服务器天气：`
             if (data.hasStorm) {
                 if (data.isThundering)
@@ -127,8 +127,9 @@ export class DynmapStats extends plugin {
     }
 
     async queryStats() {
-        if (this.#config.url)
-            await this.fetchServerData(this.#config.url)
+        logger.info("[this]", config)
+        if (config.url)
+            await this.fetchServerData(config.url)
         else
             await this.reply("请先配置文件里设置Dynmap网址。")
     }
