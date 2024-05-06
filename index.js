@@ -48,8 +48,6 @@ export class DynmapStats extends plugin {
             this.createConfig()
             config = YAML.parse(fs.readFileSync(this.#config_path, 'utf8'))
         }
-
-        logger.info("config", config)
     }
 
     async connectionError() {
@@ -127,7 +125,6 @@ export class DynmapStats extends plugin {
     }
 
     async queryStats() {
-        logger.info("[this]", config)
         if (config.url)
             await this.fetchServerData(config.url)
         else
