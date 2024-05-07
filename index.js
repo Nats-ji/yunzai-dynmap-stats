@@ -17,7 +17,7 @@ export class DynmapStats extends plugin {
             event: 'message',
             rule: [
                 {
-                    reg: '^#MC状态$',
+                    reg: '^(＃|#)\s?(mc|MC|我的世界|minecraft)状态$',
                     fnc: 'queryStats'
                 }
             ]
